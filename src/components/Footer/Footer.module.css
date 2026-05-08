@@ -1,0 +1,81 @@
+.footer {
+  background: var(--pink-bs);
+  padding: 36px 48px 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 160px 1fr 200px;
+  gap: 40px;
+  margin-bottom: 28px;
+  align-items: start;
+}
+
+/* Logo - italic serif, white */
+.brand { display: flex; align-items: flex-start; padding-top: 2px; }
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--white);
+  letter-spacing: 0.01em;
+}
+
+/* About */
+.about p {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.75;
+  font-weight: 300;
+}
+.tagline { margin-top: 14px !important; }
+
+/* Contact */
+.contact {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.85;
+  font-weight: 300;
+}
+.contactTitle {
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+
+/* Social icons — plain white circle style */
+.socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  align-items: center;
+}
+.si {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  transition: background 0.2s, transform 0.2s;
+}
+.si:hover { background: rgba(255,255,255,0.35); transform: translateY(-2px); }
+
+/* Bottom */
+.bottom {
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 14px;
+  text-align: center;
+}
+.bottom p {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 300;
+}
+
+@media (max-width: 600px) {
+  .footer { padding: 32px 20px 16px; }
+  .grid { grid-template-columns: 1fr; gap: 24px; }
+}

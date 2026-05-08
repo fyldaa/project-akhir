@@ -1,0 +1,129 @@
+@font-face {
+  font-family: 'melodrame';
+  src: url('src/font/melodrame.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'fav';
+  src: url('src/font/favnotif.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'inter';
+  src: url('src/font/inter.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.hero {
+  min-height: 100vh;
+  width: 100%;
+  background: var(--pink-hero);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 120px 100px;
+  position: relative;
+  overflow: hidden;
+  gap: 60px;
+}
+
+/* PITA GAMBAR */
+.bow {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px; /* bisa kamu gedein lagi */
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+/* TEXT */
+.content {
+  flex: 1.2;
+  z-index: 2;
+}
+
+.content h1 {
+  font-family: 'fav';
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+.content h1 em {
+  font-family: 'melodrame';
+}
+
+.content p {
+  font-family: 'inter';
+  font-size: 1.15rem;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.92);
+  max-width: 520px;
+}
+
+/* IMAGE */
+.imageWrap {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.imageWrap img {
+  width: 420px;
+  height: 420px;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 40px rgba(0,0,0,0.2));
+}
+
+/* placeholder */
+.placeholder {
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  border: 2px dashed rgba(255,255,255,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: rgba(255,255,255,0.7);
+}
+
+.placeholder span { font-size: 3.5rem; }
+.placeholder small { font-size: 0.75rem; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    flex-direction: column;
+    text-align: center;
+    padding: 100px 24px 60px;
+  }
+
+  .content p {
+    max-width: 100%;
+  }
+
+  .imageWrap {
+    justify-content: center;
+  }
+
+  .bow {
+    width: 120px;
+    top: 30px;
+  }
+}

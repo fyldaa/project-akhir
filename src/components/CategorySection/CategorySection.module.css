@@ -1,0 +1,109 @@
+.section {
+  background: var(--pink-section);
+  min-height: 100vh; /* FULL layar */
+  padding: 100px 0 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* semua ke tengah */
+}
+
+/* TITLE */
+.title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 2.8rem;
+  font-weight: 400;
+  color: var(--pink-text);
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* tetap 3 (bracelet, necklace, ring) */
+  gap: 40px;
+
+  width: 100%;
+  max-width: 900px; /* center & balance */
+  margin: 0 auto;
+}
+
+/* CARD */
+.card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 50px 20px 36px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+
+  box-shadow: 0 6px 20px rgba(180,80,110,0.1);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(180,80,110,0.18);
+}
+
+/* IMAGE */
+.imgWrap {
+  width: 140px;
+  height: 140px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imgWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* EMOJI */
+.emoji {
+  font-size: 3.8rem;
+}
+
+/* LABEL */
+.label {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--pink-text);
+}
+
+/* ANIM */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+  .grid {
+    gap: 28px;
+    max-width: 700px;
+  }
+}
+
+/* HP */
+@media (max-width: 600px) {
+  .section {
+    padding: 70px 20px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+}

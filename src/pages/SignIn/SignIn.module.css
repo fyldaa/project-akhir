@@ -1,0 +1,63 @@
+.main {
+  padding-top: 60px; min-height: 100vh;
+  background: var(--pink-bs);
+  display: flex; align-items: center; justify-content: center;
+}
+.card {
+  background: var(--white); border-radius: 20px;
+  padding: 40px 36px 32px; width: 100%; max-width: 380px;
+  margin: 40px 20px; box-shadow: 0 8px 40px rgba(140,50,80,0.15);
+}
+.top { text-align: center; margin-bottom: 28px; }
+.iconWrap {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--pink-light);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--pink-text); margin: 0 auto 16px;
+}
+.title { font-family: 'melodrame', serif; font-size: 1.6rem; font-weight: 400; color: var(--text-dark); margin-bottom: 6px; }
+.subtitle { font-size: 0.82rem; color: var(--text-light); font-weight: 300; }
+
+.form { display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 0.8rem; font-weight: 500; color: var(--text-mid); }
+.field input {
+  border: 1.5px solid #f0dde3; border-radius: 10px;
+  padding: 11px 14px; font-family: 'Inter', sans-serif;
+  font-size: 0.88rem; color: var(--text-dark);
+  background: #fdf8f9; outline: none;
+  transition: border-color 0.2s, background 0.2s; width: 100%;
+}
+.field input:focus { border-color: var(--pink-section); background: var(--white); }
+.field input::placeholder { color: #ccc; }
+
+.errorBox {
+  background: #fff0f0; border: 1px solid #ffcccc;
+  border-radius: 8px; padding: 10px 14px;
+  font-size: 0.8rem; color: #c0392b;
+}
+.btn {
+  background: var(--pink-bs); color: var(--white);
+  border: none; border-radius: 50px; padding: 13px;
+  font-size: 0.92rem; font-weight: 500; margin-top: 4px;
+  transition: background 0.2s, opacity 0.2s; width: 100%;
+}
+.btn:hover:not(:disabled) { background: var(--pink-hero); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.registerLink {
+  text-align: center; font-size: 0.82rem;
+  color: var(--text-light); margin-top: 20px;
+  padding-top: 16px; border-top: 1px solid #f0dde3;
+}
+.registerLink a { color: var(--pink-text); font-weight: 500; }
+.registerLink a:hover { text-decoration: underline; }
+
+.adminHint {
+  text-align: center; font-size: 0.7rem;
+  color: var(--text-light); margin-top: 12px;
+}
+.adminHint code {
+  background: #fdf0f3; color: var(--pink-text);
+  padding: 1px 6px; border-radius: 4px; font-size: 0.68rem;
+}

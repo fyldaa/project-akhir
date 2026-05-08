@@ -1,0 +1,26 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('./font/inter.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink-hero:    #C96B85;
+  --pink-section: #F0C0CF;
+  --pink-bs:      #D4748C;
+  --pink-text:    #C0607A;
+  --pink-light:   #faeaef;
+  --white:        #ffffff;
+  --text-dark:    #2C2C2C;
+  --text-mid:     #666666;
+  --text-light:   #999999;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--text-dark); overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+button { font-family: 'Inter', sans-serif; cursor: pointer; }
+img { display: block; max-width: 100%; }

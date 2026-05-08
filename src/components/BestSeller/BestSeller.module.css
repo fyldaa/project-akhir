@@ -1,0 +1,144 @@
+.section {
+  padding: 52px 40px 64px;
+  text-align: center;
+  background: var(--pink-bs);
+}
+
+/* title */
+.title {
+  margin-bottom: 36px;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--white);
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* CARD */
+.card {
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--white);
+  text-align: center;
+  box-shadow: 0 2px 16px rgba(140, 50, 80, 0.1);
+  animation: fadeUp 0.5s ease both;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(140, 50, 80, 0.18);
+}
+
+/* image */
+.imgWrap {
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+
+  background: #fdf0f3;
+}
+
+.imgWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  transition: transform 0.4s ease;
+}
+
+.card:hover .imgWrap img {
+  transform: scale(1.06);
+}
+
+.ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 2.5rem;
+}
+
+/* info */
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 10px 12px 14px;
+}
+
+.name {
+  margin-bottom: 3px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  color: var(--pink-text);
+}
+
+.price {
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 300;
+  text-align: center;
+  color: var(--pink-text);
+}
+
+/* button */
+.btn {
+  display: inline-block;
+
+  padding: 5px 16px;
+  border-radius: 50px;
+  border: 1.5px solid var(--pink-text);
+
+  background: transparent;
+  color: var(--pink-text);
+
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn:hover {
+  background: var(--pink-text);
+  color: var(--white);
+}
+
+/* animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+  .section {
+    padding: 40px 20px 52px;
+  }
+
+  .grid {
+    gap: 12px;
+    max-width: 100%;
+  }
+}
