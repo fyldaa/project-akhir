@@ -29,8 +29,7 @@ export default function BestSeller() {
     fetch('http://localhost:3001/api/products') 
       .then((res) => res.json())
       .then((data) => {
-        // FILTER KETAT: Hanya ambil yang nilainya 1 atau true
-        // Pastikan 'p.is_bestseller' sama dengan nama kolom di database kamu
+        // Hanya ambil yang nilainya 1 atau true
         const onlyBest = data.filter(p => 
           p.is_bestseller === 1 || 
           p.is_bestseller === "1" || 

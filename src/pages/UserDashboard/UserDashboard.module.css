@@ -62,7 +62,7 @@
 }
 .logoutBtn:hover { background: rgba(255,255,255,0.25); }
 
-/* ── TABS ── */
+/* TABS */
 .tabsBar {
   background: var(--white);
   border-bottom: 1px solid #f0e0e5;
@@ -88,7 +88,7 @@
 .tab:hover { color: var(--pink-text); }
 .tab.tabActive { color: var(--pink-text); border-bottom-color: var(--pink-text); font-weight: 500; }
 
-/* ── CONTENT ── */
+/* CONTENT */
 .content {
   flex: 1;
   max-width: 900px;
@@ -97,7 +97,7 @@
   padding: 0 40px 60px;
 }
 
-/* ── FAV GRID ── */
+/* FAV GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -147,12 +147,12 @@
 }
 .cardBtn:hover { background: var(--pink-text); color: var(--white); }
 
-/* ── STARS ── */
+/* STARS */
 .stars { display: flex; gap: 2px; }
 .starOn { color: #FFD700; font-size: 0.85rem; }
 .starOff { color: #e0d0d5; font-size: 0.85rem; }
 
-/* ── REVIEW LIST ── */
+/* REVIEW LIST */
 .reviewList { display: flex; flex-direction: column; gap: 12px; }
 .reviewCard {
   background: var(--white);
@@ -199,7 +199,7 @@
   padding-left: 52px;
 }
 
-/* ── EMPTY ── */
+/* EMPTY */
 .empty {
   text-align: center;
   padding: 60px 20px;
@@ -222,7 +222,7 @@
 }
 .browseBtn:hover { background: var(--pink-hero); }
 
-/* ── NOT LOGGED IN ── */
+/* NOT LOGGED IN */
 .notLoggedIn {
   min-height: 100vh;
   background: var(--pink-bs);

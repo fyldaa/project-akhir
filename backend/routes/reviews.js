@@ -2,7 +2,7 @@ const router = require('express').Router()
 const pool   = require('../db')
 const { authMiddleware, adminMiddleware } = require('../middleware/auth')
 
-// 1. GET /api/reviews/:productId
+// GET /api/reviews/:productId
 // Mengambil semua ulasan untuk satu produk tertentu (untuk halaman detail produk)
 router.get('/:productId', async (req, res) => {
   try {
@@ -20,7 +20,7 @@ router.get('/:productId', async (req, res) => {
   }
 })
 
-// 2. GET /api/reviews/user/:id (INI YANG BIKIN NYAMBUNG KE DASHBOARD)
+// GET /api/reviews/user/:id (INI YANG BIKIN NYAMBUNG KE DASHBOARD)
 // Mengambil semua ulasan yang pernah dibuat oleh user tertentu berdasarkan ID
 router.get('/user/:id', async (req, res) => {
   try {
@@ -38,7 +38,7 @@ router.get('/user/:id', async (req, res) => {
   }
 })
 
-// 3. GET /api/reviews/user/me
+// GET /api/reviews/user/me
 // Mengambil ulasan milik user yang sedang login (menggunakan token)
 router.get('/user/me', authMiddleware, async (req, res) => {
   try {
@@ -55,8 +55,7 @@ router.get('/user/me', authMiddleware, async (req, res) => {
   }
 })
 
-// ✅ BARU: GET /api/reviews (admin only)
-// Mengambil SEMUA ulasan dari semua user — hanya bisa diakses admin
+// Mengambil SEMUA ulasan dari semua user, hanya bisa diakses admin
 router.get('/', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -76,7 +75,7 @@ router.get('/', authMiddleware, adminMiddleware, async (req, res) => {
   }
 })
 
-// 4. POST /api/reviews/:productId
+// POST /api/reviews/:productId
 // Menambah atau memperbarui ulasan produk
 router.post('/:productId', authMiddleware, async (req, res) => {
   try {
@@ -97,7 +96,6 @@ router.post('/:productId', authMiddleware, async (req, res) => {
   }
 })
 
-// 5. DELETE /api/reviews/:reviewId
 // Menghapus ulasan (hanya pemilik atau admin)
 router.delete('/:reviewId', authMiddleware, async (req, res) => {
   try {

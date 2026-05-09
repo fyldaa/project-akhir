@@ -4,7 +4,6 @@ import pictImg from "../../assets/pict.png";
 
 export default function Hero({ heroImage }) {
   
-
   const displayImage = heroImage || pictImg;
 
   return (

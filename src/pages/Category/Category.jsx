@@ -54,7 +54,7 @@ export default function Category() {
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState('')
 
-  // 1. Logika Debounce: Nunggu user berhenti ngetik 0.6 detik baru search
+  // Logika Debounce: Nunggu user berhenti ngetik 0.6 detik baru search
   useEffect(() => {
     const timer = setTimeout(() => {
       setActiveSearch(search)
@@ -62,7 +62,7 @@ export default function Category() {
     return () => clearTimeout(timer)
   }, [search])
 
-  // 2. Fetch produk (Nama parameter disesuaikan dengan req.query Backend)
+  // Fetch produk (Nama parameter disesuaikan dengan req.query Backend)
   const fetchProducts = useCallback(() => {
     setLoading(true)
     setError('')
@@ -70,7 +70,7 @@ export default function Category() {
     const params = new URLSearchParams()
     params.set('category', activeTab)
     
-    // Sesuaikan dengan variabel di backend kamu (search, sortBy, minPrice, maxPrice)
+    // Sesuaikan dengan variabel di backend (search, sortBy, minPrice, maxPrice)
     if (activeSearch) params.set('search', activeSearch)
     if (sort)         params.set('sortBy', sort)
     if (minPrice)     params.set('minPrice', minPrice)
@@ -165,7 +165,7 @@ export default function Category() {
               </div>
             </div>
 
-    {/* Rentang Harga - Struktur HTML ini harus presisi buat CSS kamu */}
+    {/* Rentang Harga */}
     <div className={styles.filterGroup}>
       <div className={styles.filterGroupTitle}>Rentang Harga</div>
       <div className={styles.priceRange}>

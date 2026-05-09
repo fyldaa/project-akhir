@@ -1,4 +1,4 @@
-/* ── PAGE ─────────────────────────────────────────────────────── */
+/* PAGE */
 .main {
   padding-top: 60px;
   min-height: 100vh;
@@ -7,7 +7,7 @@
   flex-direction: column;
 }
 
-/* ── HEADER ──────────────────────────────────────────────────── */
+/* HEADER */
 .header {
   padding: 36px 40px 20px;
   text-align: center;
@@ -20,7 +20,7 @@
   color: var(--white);
 }
 
-/* ── TABS ────────────────────────────────────────────────────── */
+/* TABS */
 .tabs {
   display: flex;
   justify-content: center;
@@ -43,7 +43,7 @@
 .tab:hover        { background: rgba(255,255,255,0.15); color: var(--white); }
 .tab.tabActive    { background: var(--white); color: var(--pink-text); font-weight: 600; border-color: var(--white); }
 
-/* ── FILTER BAR ──────────────────────────────────────────────── */
+/* FILTER BAR */
 .filterBar {
   display: flex;
   align-items: center;
@@ -115,7 +115,7 @@
   border: 1.5px solid var(--white);
 }
 
-/* ── FILTER PANEL ────────────────────────────────────────────── */
+/* FILTER PANEL */
 .filterPanel {
   max-width: 860px;
   margin: 0 auto 20px;
@@ -247,7 +247,7 @@
 }
 .resetBtn:hover { border-color: #ffcccc; color: #c0392b; background: #fff0f0; }
 
-/* ── RESULT INFO ─────────────────────────────────────────────── */
+/* RESULT INFO */
 .resultInfo {
   max-width: 860px;
   margin: 0 auto 14px;
@@ -258,7 +258,7 @@
 }
 .filterActive { color: rgba(255,255,255,0.55); }
 
-/* ── GRID ────────────────────────────────────────────────────── */
+/* GRID */
 .gridWrap {
   flex: 1;
   padding: 0 32px 60px;
@@ -322,7 +322,7 @@
 }
 .btn:hover { background: var(--pink-text); color: var(--white); }
 
-/* ── STATES ──────────────────────────────────────────────────── */
+/* STATES */
 .loadingWrap {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -370,7 +370,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────────── */
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .header    { padding: 28px 20px 16px; }
   .tabs      { padding: 0 20px 16px; }

@@ -165,7 +165,6 @@ export default function ProductDetail() {
       <Navbar />
       <main className={styles.main}>
 
-        {/* ── PINK TOP ── */}
         <div className={styles.topSection}>
           <div className={styles.header}>
             <h1>{product.category} Details</h1>
@@ -217,7 +216,7 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* ── REVIEW SECTION ── */}
+        {/* REVIEW SECTION */}
         <div className={styles.reviewSection}>
           <div className={styles.reviewInner}>
             <div className={styles.reviewHeader}>

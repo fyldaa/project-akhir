@@ -6,7 +6,7 @@
 
 /* HEADER */
 .header {
-  padding: 30px 40px 10px; /* Atas 30px, Bawah 10px agar rapat ke bawah */
+  padding: 30px 40px 10px; 
   text-align: center;
   position: relative;
 }

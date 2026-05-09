@@ -1,4 +1,3 @@
-// Admin.jsx
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styles from './Admin.module.css'
@@ -87,10 +86,10 @@ function ImageUploader({ current, onFileChange }) {
 export default function Admin() {
   const navigate = useNavigate()
 
-  // ── Navigation ──────────────────────────────────────────
+  // Navigation
   const [activePage, setActivePage] = useState('products') // 'products' | 'reviews'
 
-  // ── Products state ──────────────────────────────────────
+  // Products state 
   const [products, setProducts] = useState([])
   const [stats, setStats] = useState({ byCategory: [], total: 0 })
   const [loading, setLoading] = useState(true)
@@ -107,7 +106,7 @@ export default function Admin() {
   const emptyForm = { name: '', price: '', category: 'Bracelet', shopee_url: '', details: '' }
   const [form, setForm] = useState(emptyForm)
 
-  // ── Reviews state ────────────────────────────────────────
+  // Reviews state
   const [reviews, setReviews] = useState([])
   const [reviewsLoading, setReviewsLoading] = useState(false)
   const [reviewsError, setReviewsError] = useState(null)
@@ -115,7 +114,7 @@ export default function Admin() {
   const [reviewRatingFilter, setReviewRatingFilter] = useState('All')
   const [deletingReviewId, setDeletingReviewId] = useState(null)
 
-  // ── Products fetch ───────────────────────────────────────
+  // Products fetch 
   const fetchProducts = useCallback(async () => {
     setLoading(true); setError(null)
     try {
@@ -144,7 +143,7 @@ export default function Admin() {
     fetchStats()
   }, [fetchProducts, fetchStats])
 
-  // ── Reviews fetch ────────────────────────────────────────
+  // Reviews fetch 
   const fetchReviews = useCallback(async () => {
     setReviewsLoading(true); setReviewsError(null)
     try {
@@ -193,7 +192,7 @@ export default function Admin() {
     return matchSearch && matchRating
   })
 
-  // ── Products handlers ────────────────────────────────────
+  // Products handlers
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
   const compressImage = (file) => new Promise((resolve, reject) => {
@@ -310,7 +309,7 @@ export default function Admin() {
     setError(null)
   }
 
-  // ── Render ───────────────────────────────────────────────
+  // Render 
   return (
     <div className={styles.page}>
       <aside className={styles.sidebar}>
@@ -344,7 +343,7 @@ export default function Admin() {
 
       <main className={styles.main}>
 
-        {/* ── PRODUCTS PAGE ── */}
+        {/* PRODUCTS PAGE */}
         {activePage === 'products' && (
           <>
             <div className={styles.topbar}>
@@ -461,7 +460,7 @@ export default function Admin() {
           </>
         )}
 
-        {/* ── REVIEWS PAGE ── */}
+        {/* REVIEWS PAGE */}
         {activePage === 'reviews' && (
           <>
             <div className={styles.topbar}>

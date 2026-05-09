@@ -23,7 +23,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem('charmevely_user', JSON.stringify(data.user))
       setUser(data.user)
 
-      // PASTIIN DISINI: Mengirim isAdmin ke SignIn.jsx
       // !!data.user.is_admin akan mengubah nilai 1 jadi true, 0 jadi false
       return { success: true, isAdmin: !!data.user.is_admin }
       
