@@ -1,133 +1,98 @@
-import { useState } from 'react'
-import Navbar from '../../components/Navbar/Navbar'
-import Footer from '../../components/Footer/Footer'
-import styles from './Contact.module.css'
+import { useState } from 'react';
+import Navbar from '../../components/Navbar/Navbar';
+import Footer from '../../components/Footer/Footer';
+import styles from './Contact.module.css';
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
-  const [submitted, setSubmitted] = useState(false)
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
+  // Handle input perubahan form
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
-  // GANTI FUNGSI INI
+  // Simpan pesan ke LocalStorage
   const handleSubmit = (e) => {
-    e.preventDefault()
-    if (!form.name || !form.email || !form.message) return
+    e.preventDefault();
+    const { name, email, message } = form;
 
-    const savedMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]')
-    const newMessage = { 
-      ...form, 
-      id: Date.now(), 
-      date: new Date().toLocaleString('id-ID') 
-    }
-    const updatedMessages = [newMessage, ...savedMessages]
+    // Validasi sederhana
+    if (!name || !email || !message) return;
 
-    localStorage.setItem('contact_messages', JSON.stringify(updatedMessages))
-    setSubmitted(true)
-  }
+    const savedMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
+    
+    const newMessage = {
+      ...form,
+      id: Date.now(),
+      date: new Date().toLocaleString('id-ID'),
+    };
+
+    const updatedMessages = [newMessage, ...savedMessages];
+    localStorage.setItem('contact_messages', JSON.stringify(updatedMessages));
+
+    // Feedback ke user
+    setSubmitted(true);
+    setForm({ name: '', email: '', message: '' }); // Reset form setelah kirim
+
+    // Sembunyikan notifikasi sukses setelah 5 detik
+    setTimeout(() => setSubmitted(false), 5000);
+  };
 
   return (
     <>
       <Navbar />
       <main className={styles.main}>
-
-        <div className={styles.header}>
+        <header className={styles.header}>
           <h1>Contact</h1>
           <p>Ada pertanyaan? Kami siap membantu!</p>
-        </div>
+        </header>
 
-        <div className={styles.content}>
-
+        <section className={styles.content}>
           <div className={styles.infoCol}>
-            <div className={styles.infoCard}>
-              <span className={styles.infoIcon}>📧</span>
-              <div>
-                <div className={styles.infoLabel}>Email</div>
-                <a href="mailto:charmevely@accessories.id" className={styles.infoVal}>charmevely@accessories.id</a>
-              </div>
-            </div>
-            <div className={styles.infoCard}>
-              <span className={styles.infoIcon}>📞</span>
-              <div>
-                <div className={styles.infoLabel}>Phone / WhatsApp</div>
-                <a href="https://wa.me/62123456789" target="_blank" rel="noopener noreferrer" className={styles.infoVal}>+62 123 456 789</a>
-              </div>
-            </div>
-            <div className={styles.infoCard}>
-              <span className={styles.infoIcon}>🛍️</span>
-              <div>
-                <div className={styles.infoLabel}>Shopee</div>
-                <a href="https://shopee.co.id" target="_blank" rel="noopener noreferrer" className={styles.infoVal}>shopee.co.id/charmevely</a>
-              </div>
-            </div>
-            <div className={styles.infoCard}>
-              <span className={styles.infoIcon}>📸</span>
-              <div>
-                <div className={styles.infoLabel}>Instagram</div>
-                <a href="https://www.instagram.com/akbauruu16" target="_blank" rel="noopener noreferrer" className={styles.infoVal}>@charmevely</a>
-              </div>
-            </div>
+            <ContactInfo 
+              icon="📧" 
+              label="Email" 
+              value="fyldaa164@gmail.com" 
+              link="mailto:fyldaa164@gmail.com" 
+            />
+            <ContactInfo 
+              icon="📞" 
+              label="Phone / WhatsApp" 
+              value="+62 123 456 789" 
+              link="https://wa.me/62123456789" 
+            />
+            <ContactInfo 
+              icon="🛍️" 
+              label="Shopee" 
+              value="shopee.co.id/charmevely" 
+              link="https://shopee.co.id" 
+            />
+            <ContactInfo 
+              icon="📸" 
+              label="Instagram" 
+              value="@nzzfyaa" 
+              link="https://www.instagram.com/nzzfyaa" 
+            />
           </div>
-
-          <div className={styles.formCol}>
-            {submitted ? (
-              <div className={styles.success}>
-                <span>💌</span>
-                <h2>Pesan Terkirim!</h2>
-                <p>Terima kasih sudah menghubungi kami. Kami akan segera membalas pesanmu.</p>
-                <button className={styles.resetBtn} onClick={() => { setSubmitted(false); setForm({ name: '', email: '', message: '' }) }}>
-                  Kirim Pesan Lain
-                </button>
-              </div>
-            ) : (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <h2 className={styles.formTitle}>Kirim Pesan</h2>
-
-                <div className={styles.field}>
-                  <label>Nama</label>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Nama kamu"
-                    value={form.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className={styles.field}>
-                  <label>Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="email@kamu.com"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className={styles.field}>
-                  <label>Pesan</label>
-                  <textarea
-                    name="message"
-                    placeholder="Tuliskan pesanmu di sini..."
-                    rows={5}
-                    value={form.message}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <button type="submit" className={styles.submitBtn}>
-                  Kirim Pesan →
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </>
-  )
+  );
+}
+
+function ContactInfo({ icon, label, value, link }) {
+  return (
+    <div className={styles.infoCard}>
+      <span className={styles.infoIcon}>{icon}</span>
+      <div>
+        <div className={styles.infoLabel}>{label}</div>
+        <a href={link} target="_blank" rel="noopener noreferrer" className={styles.infoVal}>
+          {value}
+        </a>
+      </div>
+    </div>
+  );
 }

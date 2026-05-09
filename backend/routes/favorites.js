@@ -2,7 +2,7 @@ const router = require('express').Router()
 const pool   = require('../db')
 const { authMiddleware } = require('../middleware/auth')
 
-// --- 1. PINDAHKAN /ids KE ATAS ---
+// PINDAHKAN /ids KE ATAS 
 // Supaya Express tidak mengira "ids" adalah sebuah ":id"
 router.get('/ids', authMiddleware, async (req, res) => {
   try {
@@ -23,7 +23,7 @@ router.get('/ids', authMiddleware, async (req, res) => {
   }
 })
 
-// --- 2. GET FAVORIT USER LOGIN (Pake Token) ---
+// GET FAVORIT USER LOGIN (Pake Token) 
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const uId = req.user.id;
@@ -43,7 +43,7 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 })
 
-// --- 3. GET FAVORIT BERDASARKAN ID (Untuk Dashboard) ---
+// GET FAVORIT BERDASARKAN ID (Untuk Dashboard)
 // Rute dengan parameter :id HARUS di bawah rute statis seperti /ids
 router.get('/:id', async (req, res) => {
   try {
@@ -70,7 +70,7 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-// --- 4. POST TOGGLE FAVORITE ---
+// POST TOGGLE FAVORITE 
 router.post('/:productId', authMiddleware, async (req, res) => {
   try {
     const uId = req.user.id;

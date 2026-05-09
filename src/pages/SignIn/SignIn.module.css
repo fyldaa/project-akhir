@@ -52,12 +52,3 @@
 }
 .registerLink a { color: var(--pink-text); font-weight: 500; }
 .registerLink a:hover { text-decoration: underline; }
-
-.adminHint {
-  text-align: center; font-size: 0.7rem;
-  color: var(--text-light); margin-top: 12px;
-}
-.adminHint code {
-  background: #fdf0f3; color: var(--pink-text);
-  padding: 1px 6px; border-radius: 4px; font-size: 0.68rem;
-}

@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const pool   = require('../db')
-const { authMiddleware } = require('../middleware/auth')
+const { authMiddleware, adminMiddleware } = require('../middleware/auth')
 
 // 1. GET /api/reviews/:productId
 // Mengambil semua ulasan untuk satu produk tertentu (untuk halaman detail produk)
@@ -47,6 +47,27 @@ router.get('/user/me', authMiddleware, async (req, res) => {
        FROM reviews r
        JOIN products p ON r.product_id = p.id
        WHERE r.user_id = ${req.user.id}
+       ORDER BY r.created_at DESC`
+    )
+    res.json(rows)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+// ✅ BARU: GET /api/reviews (admin only)
+// Mengambil SEMUA ulasan dari semua user — hanya bisa diakses admin
+router.get('/', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT r.*, 
+              u.name AS user_name,
+              p.name AS product_name,
+              p.category,
+              p.image_url
+       FROM reviews r
+       JOIN users u ON r.user_id = u.id
+       JOIN products p ON r.product_id = p.id
        ORDER BY r.created_at DESC`
     )
     res.json(rows)

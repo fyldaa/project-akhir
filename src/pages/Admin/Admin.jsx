@@ -21,6 +21,16 @@ function getToken() {
   return localStorage.getItem('charmevely_token') || ''
 }
 
+function StarRating({ rating }) {
+  return (
+    <span className={styles.stars}>
+      {[1, 2, 3, 4, 5].map(i => (
+        <span key={i} className={i <= rating ? styles.starFilled : styles.starEmpty}>★</span>
+      ))}
+    </span>
+  )
+}
+
 function ImageUploader({ current, onFileChange }) {
   const inputRef = useRef(null)
   const [preview, setPreview] = useState(null)
@@ -76,6 +86,11 @@ function ImageUploader({ current, onFileChange }) {
 
 export default function Admin() {
   const navigate = useNavigate()
+
+  // ── Navigation ──────────────────────────────────────────
+  const [activePage, setActivePage] = useState('products') // 'products' | 'reviews'
+
+  // ── Products state ──────────────────────────────────────
   const [products, setProducts] = useState([])
   const [stats, setStats] = useState({ byCategory: [], total: 0 })
   const [loading, setLoading] = useState(true)
@@ -92,6 +107,15 @@ export default function Admin() {
   const emptyForm = { name: '', price: '', category: 'Bracelet', shopee_url: '', details: '' }
   const [form, setForm] = useState(emptyForm)
 
+  // ── Reviews state ────────────────────────────────────────
+  const [reviews, setReviews] = useState([])
+  const [reviewsLoading, setReviewsLoading] = useState(false)
+  const [reviewsError, setReviewsError] = useState(null)
+  const [reviewSearch, setReviewSearch] = useState('')
+  const [reviewRatingFilter, setReviewRatingFilter] = useState('All')
+  const [deletingReviewId, setDeletingReviewId] = useState(null)
+
+  // ── Products fetch ───────────────────────────────────────
   const fetchProducts = useCallback(async () => {
     setLoading(true); setError(null)
     try {
@@ -120,9 +144,58 @@ export default function Admin() {
     fetchStats()
   }, [fetchProducts, fetchStats])
 
+  // ── Reviews fetch ────────────────────────────────────────
+  const fetchReviews = useCallback(async () => {
+    setReviewsLoading(true); setReviewsError(null)
+    try {
+      const token = getToken()
+      const res = await fetch(`${API}/reviews`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setReviews(await res.json())
+    } catch (e) {
+      setReviewsError('Gagal memuat review: ' + e.message)
+    } finally {
+      setReviewsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (activePage === 'reviews') fetchReviews()
+  }, [activePage, fetchReviews])
+
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm('Hapus review ini?')) return
+    setDeletingReviewId(reviewId)
+    try {
+      const token = getToken()
+      const res = await fetch(`${API}/reviews/${reviewId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setReviews(prev => prev.filter(r => r.id !== reviewId))
+    } catch (e) {
+      setReviewsError('Gagal menghapus review: ' + e.message)
+    } finally {
+      setDeletingReviewId(null)
+    }
+  }
+
+  // Filter reviews
+  const filteredReviews = reviews.filter(r => {
+    const matchSearch = reviewSearch === '' ||
+      r.user_name?.toLowerCase().includes(reviewSearch.toLowerCase()) ||
+      r.product_name?.toLowerCase().includes(reviewSearch.toLowerCase()) ||
+      r.comment?.toLowerCase().includes(reviewSearch.toLowerCase())
+    const matchRating = reviewRatingFilter === 'All' || r.rating === Number(reviewRatingFilter)
+    return matchSearch && matchRating
+  })
+
+  // ── Products handlers ────────────────────────────────────
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
-  // Compress gambar sebelum jadi base64 (resize maks 800px)
   const compressImage = (file) => new Promise((resolve, reject) => {
     const img = new Image()
     const objUrl = URL.createObjectURL(file)
@@ -160,7 +233,6 @@ export default function Admin() {
 
       const detailsArr = form.details.split('\n').map(d => d.trim()).filter(Boolean)
 
-      // Tentukan image_url: file baru → compress ke base64 | tidak ada file → pakai url lama
       let image_url = currentImage || null
       if (imageFile) {
         try { image_url = await compressImage(imageFile) } catch (_) {}
@@ -201,9 +273,7 @@ export default function Admin() {
     }
   }
 
-  const handleCancelConfirm = () => {
-    setShowConfirm(false)
-  }
+  const handleCancelConfirm = () => setShowConfirm(false)
 
   const handleEdit = (p) => {
     setForm({
@@ -240,129 +310,263 @@ export default function Admin() {
     setError(null)
   }
 
+  // ── Render ───────────────────────────────────────────────
   return (
     <div className={styles.page}>
       <aside className={styles.sidebar}>
         <div className={styles.sidebarLogo}>Charmevely</div>
         <nav className={styles.sidebarNav}>
-          <button className={`${styles.navItem} ${styles.navActive}`}>📦 Products</button>
+          <button
+            className={`${styles.navItem} ${activePage === 'products' ? styles.navActive : ''}`}
+            onClick={() => setActivePage('products')}
+          >
+            📦 Products
+          </button>
+          <button
+            className={`${styles.navItem} ${activePage === 'reviews' ? styles.navActive : ''}`}
+            onClick={() => setActivePage('reviews')}
+          >
+            ⭐ Reviews
+          </button>
           <Link to="/" className={styles.navItem}>🏠 Home</Link>
-          <Link to="/signin" onClick={() => { localStorage.removeItem('charmevely_token'); localStorage.removeItem('charmevely_user') }} className={styles.navItem}>🚪 Sign Out</Link>
+          <Link
+            to="/signin"
+            onClick={() => {
+              localStorage.removeItem('charmevely_token')
+              localStorage.removeItem('charmevely_user')
+            }}
+            className={styles.navItem}
+          >
+            🚪 Sign Out
+          </Link>
         </nav>
       </aside>
 
       <main className={styles.main}>
-        <div className={styles.topbar}>
-          <div>
-            <h1 className={styles.pageTitle}>Product Management</h1>
-            <p className={styles.pageSubtitle}>{(stats.total || products.length)} total produk</p>
-          </div>
-          <button className={styles.addBtn}
-            onClick={() => { setShowForm(true); setEditId(null); setForm(emptyForm); setCurrentImage(null); setImageFile(null) }}>
-            + Tambah Produk
-          </button>
-        </div>
 
-        {error && <div className={styles.errorBanner}>⚠️ {error}</div>}
-
-        {showForm && (
-          <div className={styles.formCard}>
-            <h2 className={styles.formTitle}>{editId ? 'Edit Produk' : 'Tambah Produk Baru'}</h2>
-            <form className={styles.form} onSubmit={handleSubmit}>
-              <div className={styles.field}>
-                <label>Foto Produk</label>
-                <ImageUploader
-                  current={currentImage}
-                  onFileChange={(file) => setImageFile(file)}
-                />
+        {/* ── PRODUCTS PAGE ── */}
+        {activePage === 'products' && (
+          <>
+            <div className={styles.topbar}>
+              <div>
+                <h1 className={styles.pageTitle}>Product Management</h1>
+                <p className={styles.pageSubtitle}>{(stats.total || products.length)} total produk</p>
               </div>
+              <button className={styles.addBtn}
+                onClick={() => { setShowForm(true); setEditId(null); setForm(emptyForm); setCurrentImage(null); setImageFile(null) }}>
+                + Tambah Produk
+              </button>
+            </div>
 
-              <div className={styles.formRow}>
-                <div className={styles.field}>
-                  <label>Nama Produk</label>
-                  <input name="name" value={form.name} onChange={handleChange} required />
-                </div>
-                <div className={styles.field}>
-                  <label>Harga (Rp)</label>
-                  <input name="price" type="number" value={form.price} onChange={handleChange} required />
-                </div>
-                <div className={styles.field}>
-                  <label>Kategori</label>
-                  <select name="category" value={form.category} onChange={handleChange}>
-                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-              </div>
+            {error && <div className={styles.errorBanner}>⚠️ {error}</div>}
 
-              <div className={styles.field}>
-                <label>Shopee URL</label>
-                <input name="shopee_url" value={form.shopee_url} onChange={handleChange} />
-              </div>
+            {showForm && (
+              <div className={styles.formCard}>
+                <h2 className={styles.formTitle}>{editId ? 'Edit Produk' : 'Tambah Produk Baru'}</h2>
+                <form className={styles.form} onSubmit={handleSubmit}>
+                  <div className={styles.field}>
+                    <label>Foto Produk</label>
+                    <ImageUploader
+                      current={currentImage}
+                      onFileChange={(file) => setImageFile(file)}
+                    />
+                  </div>
 
-              <div className={styles.field}>
-                <label>Details (satu baris per item)</label>
-                <textarea name="details" rows={4} value={form.details} onChange={handleChange} />
-              </div>
+                  <div className={styles.formRow}>
+                    <div className={styles.field}>
+                      <label>Nama Produk</label>
+                      <input name="name" value={form.name} onChange={handleChange} required />
+                    </div>
+                    <div className={styles.field}>
+                      <label>Harga (Rp)</label>
+                      <input name="price" type="number" value={form.price} onChange={handleChange} required />
+                    </div>
+                    <div className={styles.field}>
+                      <label>Kategori</label>
+                      <select name="category" value={form.category} onChange={handleChange}>
+                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                  </div>
 
-              <div className={styles.formActions}>
-                <button type="submit" className={styles.saveBtn} disabled={saving}>
-                  {saving ? 'Menyimpan…' : editId ? 'Simpan Perubahan' : 'Tambah'}
-                </button>
-                <button type="button" className={styles.cancelBtn} onClick={handleCancel}>Batal</button>
+                  <div className={styles.field}>
+                    <label>Shopee URL</label>
+                    <input name="shopee_url" value={form.shopee_url} onChange={handleChange} />
+                  </div>
+
+                  <div className={styles.field}>
+                    <label>Details (satu baris per item)</label>
+                    <textarea name="details" rows={4} value={form.details} onChange={handleChange} />
+                  </div>
+
+                  <div className={styles.formActions}>
+                    <button type="submit" className={styles.saveBtn} disabled={saving}>
+                      {saving ? 'Menyimpan…' : editId ? 'Simpan Perubahan' : 'Tambah'}
+                    </button>
+                    <button type="button" className={styles.cancelBtn} onClick={handleCancel}>Batal</button>
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
+            )}
+
+            <div className={styles.filters}>
+              <div className={styles.tabs}>
+                {['All', ...CATEGORIES].map(t => (
+                  <button key={t}
+                    className={`${styles.tab} ${activeTab === t ? styles.tabActive : ''}`}
+                    onClick={() => setActiveTab(t)}>{t}</button>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.tableWrap}>
+              {loading ? (
+                <div className={styles.empty}>Memuat data…</div>
+              ) : (
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>Produk</th><th>Kategori</th><th>Harga</th><th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map(p => (
+                      <tr key={p.id}>
+                        <td>
+                          <div className={styles.productCell}>
+                            <div className={styles.productThumb}>
+                              {p.image_url ? (
+                                <img src={resolveImageUrl(p.image_url)} alt={p.name} />
+                              ) : (
+                                <span>📦</span>
+                              )}
+                            </div>
+                            <span className={styles.productName}>{p.name}</span>
+                          </div>
+                        </td>
+                        <td><span className={styles.catBadge}>{p.category}</span></td>
+                        <td className={styles.priceCell}>{formatPrice(p.price)}</td>
+                        <td>
+                          <div className={styles.actionBtns}>
+                            <button className={styles.editBtn} onClick={() => handleEdit(p)}>Edit</button>
+                            <button className={styles.deleteBtn} onClick={() => handleDelete(p.id)}>Hapus</button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </>
         )}
 
-        <div className={styles.filters}>
-          <div className={styles.tabs}>
-            {['All', ...CATEGORIES].map(t => (
-              <button key={t}
-                className={`${styles.tab} ${activeTab === t ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab(t)}>{t}</button>
-            ))}
-          </div>
-        </div>
+        {/* ── REVIEWS PAGE ── */}
+        {activePage === 'reviews' && (
+          <>
+            <div className={styles.topbar}>
+              <div>
+                <h1 className={styles.pageTitle}>Review Management</h1>
+                <p className={styles.pageSubtitle}>{filteredReviews.length} review ditemukan</p>
+              </div>
+              <button className={styles.addBtn} onClick={fetchReviews}>↻ Refresh</button>
+            </div>
 
-        <div className={styles.tableWrap}>
-          {loading ? (
-            <div className={styles.empty}>Memuat data…</div>
-          ) : (
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Produk</th><th>Kategori</th><th>Harga</th><th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map(p => (
-                  <tr key={p.id}>
-                    <td>
-                      <div className={styles.productCell}>
-                        <div className={styles.productThumb}>
-                          {p.image_url ? (
-                            <img src={resolveImageUrl(p.image_url)} alt={p.name} />
-                          ) : (
-                            <span>📦</span>
-                          )}
-                        </div>
-                        <span className={styles.productName}>{p.name}</span>
-                      </div>
-                    </td>
-                    <td><span className={styles.catBadge}>{p.category}</span></td>
-                    <td className={styles.priceCell}>{formatPrice(p.price)}</td>
-                    <td>
-                      <div className={styles.actionBtns}>
-                        <button className={styles.editBtn} onClick={() => handleEdit(p)}>Edit</button>
-                        <button className={styles.deleteBtn} onClick={() => handleDelete(p.id)}>Hapus</button>
-                      </div>
-                    </td>
-                  </tr>
+            {reviewsError && <div className={styles.errorBanner}>⚠️ {reviewsError}</div>}
+
+            {/* Filter bar */}
+            <div className={styles.reviewFilterBar}>
+              <div className={styles.searchWrap}>
+                <span>🔍</span>
+                <input
+                  className={styles.searchInput}
+                  placeholder="Cari user, produk, atau komentar…"
+                  value={reviewSearch}
+                  onChange={e => setReviewSearch(e.target.value)}
+                />
+              </div>
+              <div className={styles.tabs}>
+                {['All', '5', '4', '3', '2', '1'].map(r => (
+                  <button
+                    key={r}
+                    className={`${styles.tab} ${reviewRatingFilter === r ? styles.tabActive : ''}`}
+                    onClick={() => setReviewRatingFilter(r)}
+                  >
+                    {r === 'All' ? 'Semua' : `${'★'.repeat(Number(r))} ${r}`}
+                  </button>
                 ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+              </div>
+            </div>
+
+            {reviewsLoading ? (
+              <div className={styles.empty}>Memuat review…</div>
+            ) : filteredReviews.length === 0 ? (
+              <div className={styles.empty}>Tidak ada review yang ditemukan.</div>
+            ) : (
+              <div className={styles.tableWrap}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>Produk</th>
+                      <th>User</th>
+                      <th>Rating</th>
+                      <th>Komentar</th>
+                      <th>Tanggal</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredReviews.map(r => (
+                      <tr key={r.id}>
+                        <td>
+                          <div className={styles.productCell}>
+                            <div className={styles.productThumb}>
+                              {r.image_url ? (
+                                <img src={resolveImageUrl(r.image_url)} alt={r.product_name} />
+                              ) : (
+                                <span>📦</span>
+                              )}
+                            </div>
+                            <div>
+                              <div className={styles.productName}>{r.product_name}</div>
+                              <span className={styles.catBadge}>{r.category}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className={styles.reviewUserCell}>
+                            <div className={styles.reviewUserAvatar}>
+                              {r.user_name?.charAt(0).toUpperCase()}
+                            </div>
+                            <span className={styles.productName}>{r.user_name}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <StarRating rating={r.rating} />
+                        </td>
+                        <td className={styles.reviewComment}>{r.comment}</td>
+                        <td className={styles.reviewDate}>
+                          {new Date(r.created_at).toLocaleDateString('id-ID', {
+                            day: 'numeric', month: 'short', year: 'numeric'
+                          })}
+                        </td>
+                        <td>
+                          <button
+                            className={styles.deleteBtn}
+                            onClick={() => handleDeleteReview(r.id)}
+                            disabled={deletingReviewId === r.id}
+                          >
+                            {deletingReviewId === r.id ? '…' : 'Hapus'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )}
       </main>
 
       {showConfirm && (

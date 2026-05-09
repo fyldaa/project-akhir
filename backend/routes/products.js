@@ -4,11 +4,10 @@ const { authMiddleware, adminMiddleware } = require('../middleware/auth')
 const path   = require('path')
 const fs     = require('fs')
 
-// Folder untuk simpan upload — di dalam public frontend agar langsung bisa diakses
+// folder untuk simpan upload, di dalam public frontend agar langsung bisa diakses
 const uploadDir = path.join(__dirname, '..', '..', 'public', 'uploads')
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true })
 
-// Helper: simpan base64 ke file, kembalikan nama file
 function saveBase64Image(base64Data, existingFilename) {
   if (!base64Data || !base64Data.startsWith('data:')) return null
   const matches = base64Data.match(/^data:image\/(\w+);base64,(.+)$/)
@@ -20,7 +19,7 @@ function saveBase64Image(base64Data, existingFilename) {
   return `uploads/${filename}`
 }
 
-// 1. GET /api/products/stats
+// GET /api/products/stats
 router.get('/stats', async (req, res) => {
   try {
     const [[{ total }]] = await pool.query('SELECT COUNT(*) as total FROM products')
@@ -31,7 +30,7 @@ router.get('/stats', async (req, res) => {
   }
 })
 
-// 2. GET /api/products
+// GET /api/products
 router.get('/', async (req, res) => {
   try {
     const { category, search, sortBy, minPrice, maxPrice, minRating } = req.query
@@ -60,7 +59,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-// 3. GET /api/products/:id
+// GET /api/products/:id
 router.get('/:id', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM v_products_full WHERE id = ?', [req.params.id])
@@ -73,14 +72,13 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-// 4. POST /api/products
+// POST /api/products
 router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { name, price, category, shopee_url, details, is_bestseller, image_url } = req.body
     const detailsArr  = Array.isArray(details) ? details : (details ? JSON.parse(details) : [])
     const detailsJson = JSON.stringify(detailsArr)
 
-    // Kalau image_url adalah base64, simpan ke file dulu
     let finalImage = image_url || null
     if (finalImage && finalImage.startsWith('data:')) {
       finalImage = saveBase64Image(finalImage, null)
@@ -96,7 +94,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
   }
 })
 
-// 5. PUT /api/products/:id
+// PUT /api/products/:id
 router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { name, price, category, shopee_url, details, is_bestseller, image_url } = req.body
@@ -124,7 +122,7 @@ router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   }
 })
 
-// 6. DELETE /api/products/:id
+// DELETE /api/products/:id
 router.delete('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     await pool.query('DELETE FROM products WHERE id = ?', [req.params.id])
