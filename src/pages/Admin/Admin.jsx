@@ -6,14 +6,13 @@ const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 const CATEGORIES = ['Bracelet', 'Necklace', 'Ring']
 const formatPrice = (p) => 'Rp ' + Number(p).toLocaleString('id-ID')
 
-// Resolve semua jenis image_url: base64, http, path publik, filename
 function resolveImageUrl(url) {
   if (!url) return null
-  if (url.startsWith('data:')) return url          // base64
-  if (url.startsWith('http')) return url           // url penuh
-  if (url.startsWith('/')) return url              // path absolut
-  if (url.startsWith('uploads/')) return `/${url}` // disimpan di public/uploads/
-  return `/${url}`                                 // file di public/ (produk lama)
+  if (url.startsWith('data:')) return url
+  if (url.startsWith('http')) return url
+  if (url.startsWith('/')) return url
+  if (url.startsWith('uploads/')) return `/${url}`
+  return `/${url}`
 }
 
 function getToken() {
@@ -86,10 +85,8 @@ function ImageUploader({ current, onFileChange }) {
 export default function Admin() {
   const navigate = useNavigate()
 
-  // Navigation
-  const [activePage, setActivePage] = useState('products') // 'products' | 'reviews'
+  const [activePage, setActivePage] = useState('products')
 
-  // Products state 
   const [products, setProducts] = useState([])
   const [stats, setStats] = useState({ byCategory: [], total: 0 })
   const [loading, setLoading] = useState(true)
@@ -106,7 +103,6 @@ export default function Admin() {
   const emptyForm = { name: '', price: '', category: 'Bracelet', shopee_url: '', details: '' }
   const [form, setForm] = useState(emptyForm)
 
-  // Reviews state
   const [reviews, setReviews] = useState([])
   const [reviewsLoading, setReviewsLoading] = useState(false)
   const [reviewsError, setReviewsError] = useState(null)
@@ -114,7 +110,6 @@ export default function Admin() {
   const [reviewRatingFilter, setReviewRatingFilter] = useState('All')
   const [deletingReviewId, setDeletingReviewId] = useState(null)
 
-  // Products fetch 
   const fetchProducts = useCallback(async () => {
     setLoading(true); setError(null)
     try {
@@ -143,7 +138,6 @@ export default function Admin() {
     fetchStats()
   }, [fetchProducts, fetchStats])
 
-  // Reviews fetch 
   const fetchReviews = useCallback(async () => {
     setReviewsLoading(true); setReviewsError(null)
     try {
@@ -182,7 +176,6 @@ export default function Admin() {
     }
   }
 
-  // Filter reviews
   const filteredReviews = reviews.filter(r => {
     const matchSearch = reviewSearch === '' ||
       r.user_name?.toLowerCase().includes(reviewSearch.toLowerCase()) ||
@@ -192,9 +185,9 @@ export default function Admin() {
     return matchSearch && matchRating
   })
 
-  // Products handlers
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
+  // FIX 413: loop turunkan quality sampai ukuran < ~200KB (267K karakter base64)
   const compressImage = (file) => new Promise((resolve, reject) => {
     const img = new Image()
     const objUrl = URL.createObjectURL(file)
@@ -209,8 +202,13 @@ export default function Admin() {
       const canvas = document.createElement('canvas')
       canvas.width = width; canvas.height = height
       canvas.getContext('2d').drawImage(img, 0, 0, width, height)
-      let b64 = canvas.toDataURL('image/jpeg', 0.8)
-      if (b64.length > 300000) b64 = canvas.toDataURL('image/jpeg', 0.6)
+      const MAX_B64 = 267000
+      let quality = 0.8
+      let b64 = canvas.toDataURL('image/jpeg', quality)
+      while (b64.length > MAX_B64 && quality > 0.1) {
+        quality = Math.round((quality - 0.1) * 10) / 10
+        b64 = canvas.toDataURL('image/jpeg', quality)
+      }
       resolve(b64)
     }
     img.onerror = reject
@@ -309,7 +307,6 @@ export default function Admin() {
     setError(null)
   }
 
-  // Render 
   return (
     <div className={styles.page}>
       <aside className={styles.sidebar}>
@@ -343,7 +340,6 @@ export default function Admin() {
 
       <main className={styles.main}>
 
-        {/* PRODUCTS PAGE */}
         {activePage === 'products' && (
           <>
             <div className={styles.topbar}>
@@ -460,7 +456,6 @@ export default function Admin() {
           </>
         )}
 
-        {/* REVIEWS PAGE */}
         {activePage === 'reviews' && (
           <>
             <div className={styles.topbar}>
@@ -473,7 +468,6 @@ export default function Admin() {
 
             {reviewsError && <div className={styles.errorBanner}>⚠️ {reviewsError}</div>}
 
-            {/* Filter bar */}
             <div className={styles.reviewFilterBar}>
               <div className={styles.searchWrap}>
                 <span>🔍</span>
@@ -540,9 +534,7 @@ export default function Admin() {
                             <span className={styles.productName}>{r.user_name}</span>
                           </div>
                         </td>
-                        <td>
-                          <StarRating rating={r.rating} />
-                        </td>
+                        <td><StarRating rating={r.rating} /></td>
                         <td className={styles.reviewComment}>{r.comment}</td>
                         <td className={styles.reviewDate}>
                           {new Date(r.created_at).toLocaleDateString('id-ID', {
