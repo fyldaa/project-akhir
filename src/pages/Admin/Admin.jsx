@@ -561,20 +561,23 @@ export default function Admin() {
       </main>
 
       {showConfirm && (
-        <div className={styles.confirmOverlay}>
-          <div className={styles.confirmBox}>
-            <p className={styles.confirmText}>
-              {editId ? 'Simpan perubahan produk ini?' : 'Tambah produk baru ini?'}
-            </p>
-            <div className={styles.confirmActions}>
-              <button className={styles.confirmYes} onClick={handleConfirmSave} disabled={saving}>
-                {saving ? 'Menyimpan…' : 'Ya, Simpan'}
-              </button>
-              <button className={styles.confirmNo} onClick={handleCancelConfirm}>Batal</button>
-            </div>
-          </div>
-        </div>
-      )}
+  <div className={styles.confirmOverlay}>
+    <div className={styles.confirmBox}>
+      <div className={styles.confirmIcon}>
+        {editId ? '✏️' : '✨'}
+      </div>
+      <p className={styles.confirmText}>
+        {editId ? 'Simpan perubahan produk ini?' : 'Tambah produk baru ini?'}
+      </p>
+      <div className={styles.confirmActions}>
+        <button className={styles.confirmYes} onClick={handleConfirmSave} disabled={saving}>
+          {saving ? 'Menyimpan…' : 'Ya, Simpan'}
+        </button>
+        <button className={styles.confirmNo} onClick={handleCancelConfirm}>Batal</button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   )
 }
